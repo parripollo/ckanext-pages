@@ -1,5 +1,23 @@
 {% ckan_extends %}
 
+{# The main navigation goes through h.build_nav_main, which this
+   extension wraps to add the pages and honour the *_menu options. The
+   default templates already call it; other base templates (the Midnight
+   Blue theme of CKAN 2.13) build the tabs themselves, so it is done here
+   for all of them. #}
+{% block header_site_navigation_tabs %}
+  {% set org_type = h.default_group_type('organization') %}
+  {% set group_type = h.default_group_type('group') %}
+
+  {{ h.build_nav_main(
+    (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
+    (org_type ~ '.index',
+      h.humanize_entity_type('organization', org_type, 'main nav') or _('Organizations'), ['organization']),
+    (group_type ~ '.index',
+      h.humanize_entity_type('group', group_type, 'main nav') or _('Groups'), ['group']),
+    ('home.about', _('About')) ) }}
+{% endblock %}
+
 {% block header_account_logged %}
   <li>
     <a href="{{ h.url_for('pages.pages_index') }}" title="{{ _('Pages') }}">
