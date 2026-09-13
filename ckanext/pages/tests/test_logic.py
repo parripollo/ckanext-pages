@@ -61,14 +61,16 @@ class TestPages():
             params={
                 'title': 'Disallowed',
                 'name': 'page_html_disallowed',
-                'content': '<mark>Test Link</mark>',
+                # a tag no sanitizer keeps (<mark> is fine for nh3, the
+                # sanitizer of CKAN 2.13)
+                'content': '<font color="red">Test Link</font>',
                 'private': False,
             },
             headers=headers,
         )
         assert '<h1 class="page-heading">Disallowed</h1>' in response.body
         assert 'Test Link' in response.body
-        assert '<mark>Test Link</mark>' not in response.body
+        assert '<font color="red">Test Link</font>' not in response.body
 
     @pytest.mark.ckan_config(cfg.ALLOW_HTML, False)
     def test_rendering_no_p_tags_added_with_html_disallowed(self, app):
